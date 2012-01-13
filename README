@@ -2,12 +2,13 @@ Structure:
 
     class UserProfile < ActiveRecord::Base
 
+      belongs_to :home_country, :class_name => 'Country'
+      belongs_to :current_university, :class_name => 'University'
+
       acts_as_aan do
         [ [:current_university, 'University', :name],
           [:home_country, 'Country', :name]]
       end
-
-      attr_accessible :home_country_name, :current_university_name
 
       validates :home_country_name, :presence => true
       validates :current_university_name, :presence => true
