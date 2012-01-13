@@ -15,12 +15,17 @@ string value in the form. Eg. country can by assigned by country name.
 
   s.rubyforge_project = "a_a_n"
 
-  s.files         = `git ls-files`.split("\n")
+  s.files         = ["README",
+                     "a_a_n.gemspec",
+                     "Gemfile",
+                     "Rakefile",
+                     "init.rb",
+                     "lib/a_a_n.rb",
+                     "lib/a_a_n/association_as_name.rb",
+                     "lib/a_a_n/version.rb"]
   #s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  # specify any dependencies here; for example:
-  s.add_development_dependency "active_record"
-  # s.add_runtime_dependency "rest-client"
+  s.add_dependency("activerecord", ">= 3.0.0")
 end
