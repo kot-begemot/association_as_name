@@ -3,7 +3,7 @@ require 'bundler'
 Bundler.setup(:default, :development)
 
 require 'active_record'
-require 'aan'
+require 'a_a_n'
 require 'rspec'
 
 ActiveRecord::Base.establish_connection(

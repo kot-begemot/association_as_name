@@ -7,7 +7,5 @@ gem 'rspec'
 
 group :development do
   gem 'rspec'
-  platform :ruby do
-    gem 'sqlite3'
-  end
+  gem 'sqlite3'
 end

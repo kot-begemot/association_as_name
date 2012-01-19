@@ -116,4 +116,15 @@ describe AAN do
     
     city.country.should be_nil
   end
+
+  it "should assign a correct association" do
+    country = Country.find_by_name('Italy')
+    city = City.create!(:name => 'Roma')
+    city.country = country
+    city.save
+    city.reload
+
+    city.country.should == Country.find_by_name('Italy')
+    city.country_name == 'Italy'
+  end
 end
