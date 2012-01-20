@@ -95,6 +95,8 @@ describe AAN do
     city.save
 
     city.country.should == Country.find_by_name('Italy')
+    city.reload
+    city.country.should == Country.find_by_name('Italy')
   end
 
   it "should not assign anything if record does not exists for existed object" do
@@ -102,6 +104,8 @@ describe AAN do
     city.country_name = 'Country of OZ'
     city.save
     
+    city.country.should be_nil
+    city.reload
     city.country.should be_nil
   end
 
@@ -115,6 +119,8 @@ describe AAN do
     city = City.create!(:name => 'Roma', :country_name => 'Country of OZ')
     
     city.country.should be_nil
+    city.reload
+    city.country.should be_nil
   end
 
   it "should assign a correct association" do
@@ -122,8 +128,10 @@ describe AAN do
     city = City.create!(:name => 'Roma')
     city.country = country
     city.save
-    city.reload
 
+    city.country.should == Country.find_by_name('Italy')
+    city.country_name == 'Italy'
+    city.reload
     city.country.should == Country.find_by_name('Italy')
     city.country_name == 'Italy'
   end
