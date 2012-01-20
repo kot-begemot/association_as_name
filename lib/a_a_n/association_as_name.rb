@@ -27,38 +27,32 @@ module AAN
 
         aan_structure.each do |aos|
           class_eval <<EOF
-              attr_accessor :#{aos.first}_#{aos.last}
-              before_validation :aan_set_#{aos.first}
-              after_initialize :aan_set_#{aos.first}_#{aos.last}
+            attr_accessor :#{aos.first}_#{aos.last}
+            before_validation :aan_set_#{aos.first}
+            after_initialize :aan_set_#{aos.first}_#{aos.last}
 
-              def #{aos.first}_#{aos.last}
-                @#{aos.first}_#{aos.last} ||= #{aos.first}.try(:#{aos.last})
+            def #{aos.first}_#{aos.last}
+              @#{aos.first}_#{aos.last} ||= #{aos.first}.try(:#{aos.last})
+            end
+
+            protected
+
+            def aan_set_#{aos.first}
+              unless #{aos.first}_#{aos.last}.blank?
+                obj = #{aos.second}.find_by_#{aos.last} #{aos.first}_#{aos.last}
+                self.#{aos.first} = obj unless obj.nil?
               end
-
-              protected
-
-              def aan_set_#{aos.first}
-                unless #{aos.first}_#{aos.last}.blank?
-                  obj = #{aos[1]}.find_by_#{aos.last} #{aos.first}_#{aos.last}
-                  self.#{aos.first} = obj unless obj.nil?
-                end
-              end
-
-              def aan_set_#{aos.first}_#{aos.last}
-                unless #{aos.first}_#{aos.last}.blank?
-                  obj = #{aos[1]}.find_by_#{aos.last} #{aos.first}_#{aos.last}
-                  self.#{aos.first} = obj unless obj.nil?
-                end
-              end
+            end
+            alias_method :aan_set_#{aos.first}_#{aos.last}, :aan_set_#{aos.first}
 EOF
         end
 
         class_eval <<EOF
-
-            cattr_accessor :aan_structure
-            @@aan_structure = #{aan_structure}
+          cattr_accessor :aan_structure
+          @@aan_structure = #{aan_structure}
 EOF
       end
     end
   end
 end
+
