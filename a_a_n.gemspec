@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
                      "Rakefile",
                      "lib/a_a_n.rb",
                      "lib/a_a_n/association_as_name.rb",
+                     "lib/a_a_n/keeper.rb",
                      "lib/a_a_n/version.rb"]
   #s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
