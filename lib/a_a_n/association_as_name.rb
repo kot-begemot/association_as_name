@@ -23,9 +23,9 @@ module AAN
 
     module ClassMethods
       def acts_as_aan &block
-        AAN::Keeper.associations &block
+        AAN::Keeper.associations(self, &block)
 
-        AAN::Keeper.structure.each_pair do |association, assoc_attrs|
+        AAN::Keeper.structure[self].each_pair do |association, assoc_attrs|
           assoc_attrs.each do |structure|
             attribute = structure.first
             aliased_method = structure.last
@@ -39,7 +39,7 @@ module AAN
               end
 
               def #{association}_with_aan_assigment=(new_object)
-                #{AAN::Keeper.nullify_aliased_methods_for association}
+                #{AAN::Keeper.nullify_aliased_methods_for self, association}
                 association(:#{association}).replace(new_object)
               end
               alias_method_chain :#{association}=, :aan_assigment

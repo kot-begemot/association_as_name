@@ -1,28 +1,25 @@
 module AAN
   class Keeper
-    def self.nullify_aliased_methods_for assoc
+    cattr_reader :current_model
+
+    def self.nullify_aliased_methods_for model, assoc
       aliased_methods = []
-      AAN::Keeper.aliases_for(assoc).each do |aliased_method|
+      AAN::Keeper.aliases_for(model, assoc).each do |aliased_method|
         aliased_methods << "@#{aliased_method} = nil"
       end
       aliased_methods.join("\n")
     end
 
     def self.structure
-      @structures ||= {}
+      @@structures ||= {}
     end
 
     def self.[](*args)
-      (structure[args.first] ||= [])
-    end
-    
-    def self.each
-      structure.each do |sub_s|
-        yield (sub_s)
-      end
+      (structure[args.first] ||= {})
     end
 
-    def self.associations &block
+    def self.associations model, &block
+      @@current_model = model
       instance_eval &block
     end
 
@@ -35,15 +32,14 @@ module AAN
         elsif
           element = [element.to_sym, "#{name}_#{element}".to_sym]
         end
-        AAN::Keeper[name] << element
+        (AAN::Keeper[current_model][name] ||= []) << element
       end
     end
 
     protected
 
-
-    def self.aliases_for assoc
-      structure[assoc].collect do |params|
+    def self.aliases_for model, assoc
+      structure[model][assoc].collect do |params|
         params.last
       end
     end
