@@ -23,41 +23,46 @@ module AAN
 
     module ClassMethods
       def acts_as_aan &block
-        aan_structure = block.call
+        AAN::Keeper.associations &block
 
-        aan_structure.each do |aos|
-          class_eval <<EOF
-              attr_accessor :#{aos.first}_#{aos.last}
-              before_validation :aan_set_#{aos.first}
-              after_initialize :aan_set_#{aos.first}_#{aos.last}
+        AAN::Keeper.structure.each_pair do |association, assoc_attrs|
+          assoc_attrs.each do |structure|
+            attribute = structure.first
+            aliased_method = structure.last
+            class_eval <<EOF
+              attr_accessor :#{aliased_method}
+              before_validation :aan_set_#{association}
+              after_initialize :aan_set_#{aliased_method}
 
-              def #{aos.first}_#{aos.last}
-                @#{aos.first}_#{aos.last} ||= #{aos.first}.try(:#{aos.last})
+              def #{aliased_method}
+                @#{aliased_method} ||= #{association}.try(:#{attribute})
               end
+
+              def #{association}_with_aan_assigment=(new_object)
+                #{AAN::Keeper.nullify_aliased_methods_for association}
+                association(:#{association}).replace(new_object)
+              end
+              alias_method_chain :#{association}=, :aan_assigment
 
               protected
 
-              def aan_set_#{aos.first}
-                unless #{aos.first}_#{aos.last}.blank?
-                  obj = #{aos[1]}.find_by_#{aos.last} #{aos.first}_#{aos.last}
-                  self.#{aos.first} = obj unless obj.nil?
+              def aan_set_#{association}
+                unless #{aliased_method}.blank?
+                  obj = association(:#{association}).klass.find_by_#{attribute} #{aliased_method}
+                  self.#{association} = obj unless obj.nil?
                 end
               end
 
-              def aan_set_#{aos.first}_#{aos.last}
-                unless #{aos.first}_#{aos.last}.blank?
-                  obj = #{aos[1]}.find_by_#{aos.last} #{aos.first}_#{aos.last}
-                  self.#{aos.first} = obj unless obj.nil?
+              def aan_set_#{aliased_method}
+                unless #{aliased_method}.blank?
+                  obj = association(:#{association}).klass.find_by_#{attribute} #{aliased_method}
+                  self.#{association} = obj unless obj.nil?
                 end
               end
 EOF
+          end
         end
-
-        class_eval <<EOF
-
-            cattr_accessor :aan_structure
-            @@aan_structure = #{aan_structure}
-EOF
+          
       end
     end
   end

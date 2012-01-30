@@ -13,7 +13,7 @@ ActiveRecord::Base.connection.create_table(:cities) do |t|
 end
 
 class Country < ActiveRecord::Base
-  validates :name, :presence => true
+  validates :name, :iso_3166_a2, :presence => true
 end
 
 class City < ActiveRecord::Base
@@ -21,33 +21,50 @@ class City < ActiveRecord::Base
 
   acts_as_aan do
     association :country do
-      [:name]
+      [:name, { :iso_3166_a2 => :country_code}]
     end
   end
 
   validates :name, :presence => true
 end
 
-describe AAN do
-
-  it "Should assign a correct association by name for existed object" do
+describe "Multiple" do
+  it "Should assign a correct association by alias for existed object" do
     city = City.create!(:name => 'Roma')
-    city.country_name = 'Italy'
+    city.country_code = 'IT'
     city.save
 
     city.country.should == Country.find_by_name('Italy')
+    city.country_name.should == 'Italy'
     city.reload
     city.country.should == Country.find_by_name('Italy')
+    city.country_name.should == 'Italy'
   end
 
   it "Should not assign anything if record does not exists for existed object" do
     city = City.create!(:name => 'Roma')
     city.country_name = 'Country of OZ'
     city.save
-    
+
     city.country.should be_nil
     city.reload
     city.country.should be_nil
+  end
+
+  it "Should not assign anything if record does not exists for existed object" do
+    city = City.create!(:name => 'Roma')
+    city.country_code = 'OZ'
+    city.save
+
+    city.country.should be_nil
+    city.reload
+    city.country.should be_nil
+  end
+
+  it "Should assign a correct association by name for new object" do
+    city = City.create!(:name => 'Roma', :country_code => 'IT')
+
+    city.country.should == Country.find_by_name('Italy')
   end
 
   it "Should assign a correct association by name for new object" do
@@ -57,8 +74,8 @@ describe AAN do
   end
 
   it "Should not assign anything if record does not exists for new object" do
-    city = City.create!(:name => 'Roma', :country_name => 'Country of OZ')
-    
+    city = City.create!(:name => 'Roma', :country_code => 'OZ')
+
     city.country.should be_nil
     city.reload
     city.country.should be_nil
@@ -71,10 +88,12 @@ describe AAN do
     city.save
 
     city.country.should == Country.find_by_name('Italy')
-    city.country_name == 'Italy'
+    city.country_code == 'IT'
+    city.country_code == 'Italy'
     city.reload
     city.country.should == Country.find_by_name('Italy')
-    city.country_name == 'Italy'
+    city.country_code == 'IT'
+    city.country_code == 'Italy'
   end
 
   it "Should be overwritten by new object assigement" do
@@ -84,17 +103,20 @@ describe AAN do
     country_2 = Country.find_by_name('France')
 
     city.country = country_2
+    city.country_code == 'FR'
     city.country_name == 'France'
     city.save
     city.reload
+    city.country_code == 'FR'
     city.country_name == 'France'
   end
 
-  it "Should react on object nulification" do
+  it "Should react on object nullification" do
     country_1 = Country.find_by_name('Italy')
     city = City.create!(:name => 'Paris', :country_id => country_1.id)
 
     city.country = nil
+    city.country_code == nil
     city.country_name == nil
   end
 end

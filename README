@@ -6,12 +6,16 @@ Structure:
       belongs_to :current_university, :class_name => 'University'
 
       acts_as_aan do
-        [ [:current_university, 'University', :name],
-          [:home_country, 'Country', :name]]
+        association :current_university do
+          [:name]
+        end
+        association :home_country do
+          [:name, { :iso_3166_a2 => :country_code}]
+        end
       end
 
-      validates :home_country_name, :presence => true
-      validates :current_university_name, :presence => true
+      validates :home_country, :presence => true
+      validates :current_university, :presence => true
     end
 
 Usage:

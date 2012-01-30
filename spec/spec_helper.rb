@@ -12,4 +12,14 @@ ActiveRecord::Base.establish_connection(
 )
 
 RSpec.configure do |config|
+  config.before(:each) do
+    ActiveRecord::Base.connection.increment_open_transactions
+    ActiveRecord::Base.connection.begin_db_transaction
+    load File.join(File.dirname(__FILE__),'..', 'db', 'seeds.rb')
+  end
+
+  config.after(:each) do
+    ActiveRecord::Base.connection.rollback_db_transaction
+    ActiveRecord::Base.connection.decrement_open_transactions
+  end
 end
