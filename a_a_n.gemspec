@@ -23,9 +23,13 @@ Gem::Specification.new do |s|
                      "lib/a_a_n/keeper.rb",
                      "lib/a_a_n/version.rb"]
   #s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
   s.add_dependency("activesupport", ">= 3.0.0")
   s.add_dependency("activerecord", ">= 3.0.0")
+  s.add_development_dependency('sqlite3')
+  s.add_development_dependency('rspec')
+  s.add_development_dependency('guard')
+  s.add_development_dependency('guard-rspec')
+  s.add_development_dependency('ruby-debug19')
 end
