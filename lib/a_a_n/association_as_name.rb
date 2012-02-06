@@ -30,34 +30,13 @@ module AAN
             attribute = structure.first
             aliased_method = structure.last
             class_eval <<EOF
-              attr_accessor :#{aliased_method}
-              before_validation :aan_set_#{association}
-              after_initialize :aan_set_#{aliased_method}
-
+              # Could not use delegate for that, since attribute and aliased method could have different names
               def #{aliased_method}
-                @#{aliased_method} ||= #{association}.try(:#{attribute})
+                self.send(:#{association}).try(:#{attribute})
               end
 
-              def #{association}_with_aan_assigment=(new_object)
-                #{AAN::Keeper.nullify_aliased_methods_for self, association}
-                association(:#{association}).replace(new_object)
-              end
-              alias_method_chain :#{association}=, :aan_assigment
-
-              protected
-
-              def aan_set_#{association}
-                unless #{aliased_method}.blank?
-                  obj = association(:#{association}).klass.find_by_#{attribute} #{aliased_method}
-                  self.#{association} = obj unless obj.nil?
-                end
-              end
-
-              def aan_set_#{aliased_method}
-                unless #{aliased_method}.blank?
-                  obj = association(:#{association}).klass.find_by_#{attribute} #{aliased_method}
-                  self.#{association} = obj unless obj.nil?
-                end
+              def #{aliased_method}=(value)
+                self.send(:#{association}_id=, association(:#{association}).klass.find_by_#{attribute}(value).try(:id))
               end
 EOF
           end

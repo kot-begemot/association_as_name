@@ -13,7 +13,7 @@ ActiveRecord::Base.connection.create_table(:cities) do |t|
 end
 
 class Country < ActiveRecord::Base
-  validates :name, :iso_3166_a2, :presence => true
+  validates_presence_of :name, :iso_3166_a2
 end
 
 class City < ActiveRecord::Base

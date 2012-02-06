@@ -5,6 +5,7 @@ Bundler.setup(:default, :development)
 require 'active_record'
 require 'a_a_n'
 require 'rspec'
+require 'ruby-debug'
 
 ActiveRecord::Base.establish_connection(
   :adapter => "sqlite3",
