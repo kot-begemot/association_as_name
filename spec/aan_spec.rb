@@ -44,7 +44,7 @@ describe AAN do
     city = City.create!(:name => 'Roma')
     city.country_name = 'Country of OZ'
     city.save
-    
+
     city.country.should be_nil
     city.reload
     city.country.should be_nil
@@ -58,7 +58,7 @@ describe AAN do
 
   it "Should not assign anything if record does not exists for new object" do
     city = City.create!(:name => 'Roma', :country_name => 'Country of OZ')
-    
+
     city.country.should be_nil
     city.reload
     city.country.should be_nil
@@ -79,15 +79,14 @@ describe AAN do
 
   it "Should be overwritten by new object assigement" do
     country_1 = Country.find_by_name('Italy')
-    city = City.create!(:name => 'Paris', :country_id => country_1.id)
+    city = City.create!(:name => 'Paris', :country => country_1)
 
-    country_2 = Country.find_by_name('France')
-
+    country_2 = Country.find_by_name('Denmark')
     city.country = country_2
-    city.country_name == 'France'
-    city.save
+    city.country_name.should == 'Denmark'
+    city.save!
     city.reload
-    city.country_name == 'France'
+    city.country_name.should == 'Denmark'
   end
 
   it "Should react on object nulification" do
