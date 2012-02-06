@@ -1,4 +1,4 @@
-###
+#
 # Module that allows assing attributes by <tt>name</tt>(or any other method)
 #
 #  Example:
@@ -17,9 +17,7 @@
 #    end
 module AAN
   module AssociationAsName
-    def self.included(base)
-      base.extend(ClassMethods)
-    end
+    extend ActiveSupport::Concern
 
     module ClassMethods
       def acts_as_aan &block
