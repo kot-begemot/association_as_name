@@ -5,8 +5,8 @@ require "a_a_n/version"
 Gem::Specification.new do |s|
   s.name        = "a_a_n"
   s.version     = AAN::VERSION
-  s.authors     = ["E-Max"]
-  s.email       = ["max@studentify.nl"]
+  s.authors     = ["E-Max","shell"]
+  s.email       = ["developers@studentify.nl"]
   s.homepage    = "https://github.com/Studentify/association_as_name"
   s.summary     = %q{Association as name}
   s.description = %q{Whenever you need assign an association by its attribute,
