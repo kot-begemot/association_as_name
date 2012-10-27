@@ -30,10 +30,11 @@ module AAN
             class_eval <<EOF
               # Could not use delegate for that, since attribute and aliased method could have different names
               def #{aliased_method}
-                self.send(:#{association}).try(:#{attribute})
+                @#{aliased_method} ||= self.send(:#{association}).try(:#{attribute})
               end
 
               def #{aliased_method}=(value)
+                @#{aliased_method} = nil
                 self.send(:#{association}_id=, association(:#{association}).klass.find_by_#{attribute}(value).try(:id))
               end
 EOF

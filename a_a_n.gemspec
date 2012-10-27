@@ -5,7 +5,7 @@ require "a_a_n/version"
 Gem::Specification.new do |s|
   s.name        = "a_a_n"
   s.version     = AAN::VERSION
-  s.authors     = ["E-Max","shell"]
+  s.authors     = ["E-Max"]
   s.email       = ["developers@studentify.nl"]
   s.homepage    = "https://github.com/Studentify/association_as_name"
   s.summary     = %q{Association as name}

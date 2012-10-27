@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'bundler'
+require 'logger'
 Bundler.setup(:default, :development)
 
 require 'active_record'
@@ -11,6 +12,8 @@ ActiveRecord::Base.establish_connection(
   :adapter => "sqlite3",
   :database => ':memory:'
 )
+
+#ActiveRecord::Base.logger = Logger.new(STDOUT)
 
 RSpec.configure do |config|
   config.before(:each) do

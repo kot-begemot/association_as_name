@@ -1,3 +1,3 @@
 module AAN
-  VERSION = "0.2.5"
+  VERSION = File.read(File.expand_path("./../../../VERSION", __FILE__))
 end
